@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta tags for character set and viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Title of the page -->
+    <title>Country Info Widget</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+
+<!-- Main container -->
+<div class="container mt-5">
+    <!-- Card for the country info widget -->
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <!-- Widget title -->
+            <h5 class="card-title">Country Info Widget</h5>
+            
+            <!-- Form for entering country name -->
+            <div class="form-group">
+                <label for="countryInput">Enter Country:</label>
+                <input type="text" class="form-control" id="countryInput" placeholder="Enter country">
+            </div>
+            
+            <!-- Button to trigger the fetching of country info -->
+            <button class="btn btn-primary" onclick="fetchCountryInfo()">Get Country Info</button>
+            
+            <!-- Container for displaying the entered country info -->
+            <div id="country-info" class="mt-3"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<!-- JavaScript code for fetching and displaying country info -->
+<script>
+    function fetchCountryInfo() {
+        // Get the entered countries name
+        const countryName = document.getElementById('countryInput').value;
+        
+        // Construct the api url for country information
+        const apiUrl = `https://restcountries.com/v3.1/name/${countryName}`;
+
+        // Fetch country data from the api
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                // Check if the country was not found
+                if (data.status === 404) {
+                    document.getElementById('country-info').innerHTML = '<p class="text-danger">Country not found. Please enter a valid country name.</p>';
+                } else {
+                    // Display country information
+                    const countryInfo = `
+                        <p><strong>Name:</strong> ${data[0].name.common}</p>
+                        <p><strong>Capital:</strong> ${data[0].capital[0]}</p>
+                        <p><strong>Region:</strong> ${data[0].region}</p>
+                    `;
+                    document.getElementById('country-info').innerHTML = countryInfo;
+                }
+            })
+            .catch(error => {
+                // Display an error message if there is an issue fetching data
+                console.error('Error fetching country data:', error);
+                document.getElementById('country-info').innerHTML = '<p class="text-danger">Error fetching country data. Please try again.</p>';
+            });
+    }
+</script>
+
+</body>
+</html>
